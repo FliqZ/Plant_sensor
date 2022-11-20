@@ -1,18 +1,26 @@
 import streamlit as st
+from gsheetsdb import connect
 import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
 
-class Plant_sensor:
+# Create a connection object.
+conn = connect()
 
-    def __init__(self):
-        self.df = pd.DataFrame(
-            columns=["Datum","Temperatur","Feuchtigkeit","Licht","Leitfähigkeit"]
-        )
+st.title("Pflanzensensor Datenaufbereitung")
 
-    def add_entry(self, datum, temp, feuchtigkeit, licht, leitfaehigkeit):
-        new_row = [datum,temp,feuchtigkeit,licht,leitfaehigkeit]
-        self.df.loc[len(self.df)] = new_row
+class Sensor_data:
+    def __init__(self, sheet_url, df):
+       self.sheet_url = sheet_url
+       self.df = df
+    
+    @st.cache(ttl=600)
+    def run_query(self):
+        query = f'SELECT * FROM "{self.sheet_url}"'
+        rows = conn.execute(query, headers=1)
+        rows = rows.fetchall()
+        self.rows = rows
+
+        for row in self.rows:
+            self.df.loc[len(self.df)] = row
 
     def show_table(self):
         st.write(self.df)
@@ -20,34 +28,10 @@ class Plant_sensor:
     def show_line(self, x):
         st.line_chart(self.df, x = x)
 
-st.title("Pflanzensensor Datenauswertung")
+df = pd.DataFrame(columns=["Datum","Temperatur","Feuchtigkeit","Licht","Leitfähigkeit"])
+sheet_url = st.secrets["public_gsheets_url"]
 
-ps = Plant_sensor()
-
-#entry1
-date = datetime.now().strftime("%c")
-temperatur = str(22)
-feuchtigkeit = str(18)
-licht = str(5)
-leitfaehigkeit = str(50)
-#entry2
-date2 = datetime.now() - timedelta(hours=1)
-date2 = date2.strftime("%c")
-temperatur2 = str(20)
-feuchtigkeit2 = str(18)
-licht2 = str(6)
-leitfaehigkeit2 = str(65)
-#entry3
-date3 = datetime.now() - timedelta(hours=2)
-date3 = date3.strftime("%c")
-temperatur3 = str(18)
-feuchtigkeit3 = str(18)
-licht3 = str(7)
-leitfaehigkeit3 = str(70)
-
-ps.add_entry(date,temperatur,feuchtigkeit,licht,leitfaehigkeit)
-ps.add_entry(date2,temperatur2,feuchtigkeit2,licht2,leitfaehigkeit2)
-ps.add_entry(date3,temperatur3,feuchtigkeit3,licht3,leitfaehigkeit3)
-ps.show_table()
-ps.show_line(x="Datum")
-
+sd = Sensor_data(sheet_url, df)
+sd.run_query()
+sd.show_table()
+sd.show_line(x="Datum")
