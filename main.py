@@ -15,7 +15,7 @@ class Sensor_data:
     @st.cache(ttl=600)
     def run_query(self):
         query = f'SELECT * FROM "{self.sheet_url}"'
-        rows = conn.execute(query, header=1)
+        rows = conn.execute(query, headers=1)
         rows = rows.fetchall()
         self.rows = rows
 
@@ -32,7 +32,6 @@ df = pd.DataFrame(columns=["Datum","Temperatur","Feuchtigkeit","Licht","Leitfäh
 sheet_url = st.secrets["public_gsheets_url"]
 
 sd = Sensor_data(sheet_url, df)
-#print(sd.df)
 sd.run_query()
-#sd.show_table()
-#sd.show_line(x="Datum")
+sd.show_table()
+sd.show_line(x="Datum")
