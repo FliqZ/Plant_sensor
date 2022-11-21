@@ -11,7 +11,7 @@ with st.sidebar:
 
 conn = connect()
 
-st.title("Pflanzensensor Datenanalyse")
+st.title("Plant sensor - data analysis :seedling:")
 
 class Sensor_data:
     def __init__(self, sheet_url, df):
@@ -33,17 +33,17 @@ class Sensor_data:
 
     def show_line(self, x):
         df_line = self.df
-        df_line["Datum"] = pd.to_datetime(df_line["Datum"]).dt.strftime("%H:%M")
+        df_line["Time"] = pd.to_datetime(df_line["Time"]).dt.strftime("%H:%M")
         st.line_chart(df_line, x = x,)
 
     def show_metric(self):
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric(label="Temperature", value=str(self.df.iloc[-1]["Temperatur"])+"°C", delta=str((int(self.df.iloc[-1]["Temperatur"]))-int(self.df.iloc[-2]["Temperatur"]))+"°C")
-        col2.metric(label="Moisture", value=str(self.df.iloc[-1]["Feuchtigkeit"])+"", delta=str((int(self.df.iloc[-1]["Feuchtigkeit"]))-int(self.df.iloc[-2]["Feuchtigkeit"]))+"")
-        col3.metric(label="Light", value=str(self.df.iloc[-1]["Licht"])+"", delta=str((int(self.df.iloc[-1]["Licht"]))-int(self.df.iloc[-2]["Licht"]))+"")
-        col4.metric(label="Conductivity", value=str(self.df.iloc[-1]["Leitfähigkeit"])+"", delta=str((int(self.df.iloc[-1]["Leitfähigkeit"]))-int(self.df.iloc[-2]["Leitfähigkeit"]))+"")
+        col1.metric(label="Temperature", value=str(self.df.iloc[-1]["Temperature"])+"°C", delta=str((int(self.df.iloc[-1]["Temperature"]))-int(self.df.iloc[-2]["Temperature"]))+"°C")
+        col2.metric(label="Moisture", value=str(self.df.iloc[-1]["Moisture"])+"", delta=str((int(self.df.iloc[-1]["Moisture"]))-int(self.df.iloc[-2]["Moisture"]))+"")
+        col3.metric(label="Light", value=str(self.df.iloc[-1]["Light"])+"", delta=str((int(self.df.iloc[-1]["Light"]))-int(self.df.iloc[-2]["Light"]))+"")
+        col4.metric(label="Conductivity", value=str(self.df.iloc[-1]["Conductivity"])+"", delta=str((int(self.df.iloc[-1]["Conductivity"]))-int(self.df.iloc[-2]["Conductivity"]))+"")
 
-df = pd.DataFrame(columns=["Datum","Temperatur","Feuchtigkeit","Licht","Leitfähigkeit"])
+df = pd.DataFrame(columns=["Time","Temperature","Moisture","Light","Conductivity"])
 sheet_url = st.secrets["public_gsheets_url"]
 
 sd = Sensor_data(sheet_url, df)
