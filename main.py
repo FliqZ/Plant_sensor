@@ -12,7 +12,6 @@ class Sensor_data:
        self.sheet_url = sheet_url
        self.df = df
     
-    @st.cache(ttl=600)
     def run_query(self):
         query = f'SELECT * FROM "{self.sheet_url}"'
         rows = conn.execute(query, headers=1)
