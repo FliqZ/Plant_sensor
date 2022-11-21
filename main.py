@@ -6,9 +6,6 @@ from datetime import datetime as dt
 # Create a connection object.
 st.set_page_config(layout="wide")
 
-with st.sidebar:
-    display_table = st.checkbox("show table")
-
 conn = connect()
 
 st.title("Plant sensor - data analysis :seedling:")
@@ -49,6 +46,7 @@ sheet_url = st.secrets["public_gsheets_url"]
 sd = Sensor_data(sheet_url, df)
 sd.run_query()
 sd.show_metric()
+display_table = st.checkbox("show table")
 
 if display_table:
     sd.show_table()
