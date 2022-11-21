@@ -54,5 +54,5 @@ if display_table:
     sd.show_table()
     sd.show_line(x="Time")
 else:
-    sd.show_line(x="Datum")
+    sd.show_line(x="Time")
 
