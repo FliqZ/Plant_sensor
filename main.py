@@ -42,12 +42,10 @@ df = pd.DataFrame(columns=["Datum","Temperatur","Feuchtigkeit","Licht","Leitfäh
 sheet_url = st.secrets["public_gsheets_url"]
 
 sd = Sensor_data(sheet_url, df)
-
+sd.run_query()
 if display_table:
-    sd.run_query()
     sd.show_table()
     sd.show_line(x="Datum")
 else:
-    sd.run_query()
     sd.show_line(x="Datum")
 
