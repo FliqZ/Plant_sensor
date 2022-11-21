@@ -1,8 +1,14 @@
 import streamlit as st
 from gsheetsdb import connect
 import pandas as pd
+from datetime import datetime as dt
 
 # Create a connection object.
+st.set_page_config(layout="wide")
+
+with st.sidebar:
+    display_table = st.checkbox("display table")
+
 conn = connect()
 
 st.title("Pflanzensensor Datenaufbereitung")
@@ -11,7 +17,8 @@ class Sensor_data:
     def __init__(self, sheet_url, df):
        self.sheet_url = sheet_url
        self.df = df
-    
+
+    @st.cache(suppress_st_warning=True)
     def run_query(self):
         query = f'SELECT * FROM "{self.sheet_url}"'
         rows = conn.execute(query, headers=1)
@@ -25,12 +32,22 @@ class Sensor_data:
         st.write(self.df)
 
     def show_line(self, x):
-        st.line_chart(self.df, x = x)
+        df_line = self.df
+        df_line["Datum"] = pd.to_datetime(df_line["Datum"]).dt.strftime("%H:%M")
+        st.line_chart(df_line, x = x,)
+
+
 
 df = pd.DataFrame(columns=["Datum","Temperatur","Feuchtigkeit","Licht","Leitfähigkeit"])
 sheet_url = st.secrets["public_gsheets_url"]
 
 sd = Sensor_data(sheet_url, df)
-sd.run_query()
-sd.show_table()
-sd.show_line(x="Datum")
+
+if display_table:
+    sd.run_query()
+    sd.show_table()
+    sd.show_line(x="Datum")
+else:
+    sd.run_query()
+    sd.show_line(x="Datum")
+
