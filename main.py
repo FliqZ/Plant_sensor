@@ -26,6 +26,7 @@ class Sensor_data:
             self.df.loc[len(self.df)] = row
 
     def show_table(self):
+        self.df.drop("Battery", inplace=True, axis=1)
         st.write(self.df)
 
     def show_line(self, x):
@@ -35,16 +36,20 @@ class Sensor_data:
 
     def show_metric(self):
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric(label="Temperature", value=str(self.df.iloc[-1]["Temperature"])+"°C", delta=str((int(self.df.iloc[-1]["Temperature"]))-int(self.df.iloc[-2]["Temperature"]))+"°C")
-        col2.metric(label="Moisture", value=str(self.df.iloc[-1]["Moisture"])+"", delta=str((int(self.df.iloc[-1]["Moisture"]))-int(self.df.iloc[-2]["Moisture"]))+"")
-        col3.metric(label="Light", value=str(self.df.iloc[-1]["Light"])+"", delta=str((int(self.df.iloc[-1]["Light"]))-int(self.df.iloc[-2]["Light"]))+"")
-        col4.metric(label="Conductivity", value=str(self.df.iloc[-1]["Conductivity"])+"", delta=str((int(self.df.iloc[-1]["Conductivity"]))-int(self.df.iloc[-2]["Conductivity"]))+"")
+        col1.metric(label="Temperature", value=str(self.df.iloc[-1]["Temperature"])+"°C", delta=str(round((float(self.df.iloc[-1]["Temperature"]))-float(self.df.iloc[-2]["Temperature"]),2))+"°C")
+        col2.metric(label="Moisture", value=str(self.df.iloc[-1]["Moisture"])+"%", delta=str(round((float(self.df.iloc[-1]["Moisture"]))-float(self.df.iloc[-2]["Moisture"]),2))+"%")
+        col3.metric(label="Light", value=str(self.df.iloc[-1]["Light"])+"lux", delta=str(round((float(self.df.iloc[-1]["Light"]))-float(self.df.iloc[-2]["Light"]),2))+"lux")
+        col4.metric(label="Conductivity", value=str(self.df.iloc[-1]["Conductivity"])+"[µS/cm]", delta=str(round((float(self.df.iloc[-1]["Conductivity"]))-float(self.df.iloc[-2]["Conductivity"]),2))+"[µS/cm]")
 
-df = pd.DataFrame(columns=["Time","Temperature","Moisture","Light","Conductivity"])
+    def show_battery(self):
+        st.title(":battery:" + str(int(self.df.iloc[-1]["Battery"]))+"%")
+
+df = pd.DataFrame(columns=["Time","Temperature","Moisture","Light","Conductivity","Battery"])
 sheet_url = st.secrets["public_gsheets_url"]
 
 sd = Sensor_data(sheet_url, df)
 sd.run_query()
+sd.show_battery()
 sd.show_metric()
 display_table = st.checkbox("show table")
 
@@ -53,4 +58,5 @@ if display_table:
     sd.show_line(x="Time")
 else:
     sd.show_line(x="Time")
+
 
