@@ -7,7 +7,7 @@ import time
 
 poller = MiFloraPoller("5C:85:7E:B0:1E:C4",GatttoolBackend)
 gc = gspread.service_account()
-sheet = gc.open_by_key('1SIVicNq5FcrDpr73jNOlQ6vsvpBnSpLvm0LcGY-FGzQ')
+sheet = gc.open_by_key('<google_sheet_key>')
 worksheet = sheet.get_worksheet(0)
 
 def check():
