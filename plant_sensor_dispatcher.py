@@ -5,6 +5,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 import time
 
+#MAC-Adress from MiFlora
 poller = MiFloraPoller("5C:85:7E:B0:1E:C4",GatttoolBackend)
 gc = gspread.service_account()
 sheet = gc.open_by_key('<google_sheet_key>')
@@ -33,7 +34,8 @@ def check():
     params = {'valueInputOption': 'USER_ENTERED'}
     body = {'values': df.values.tolist()}
     sheet.values_append(f"Data!A2",params,body)
-    
+
+#Check the data every hour
 while True:
     check()
     time.sleep(3600)
