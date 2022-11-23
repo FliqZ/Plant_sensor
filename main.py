@@ -1,6 +1,7 @@
 import streamlit as st
 from gsheetsdb import connect
 import pandas as pd
+import altair as alt
 from datetime import datetime as dt
 
 # Create a connection object.
@@ -10,12 +11,16 @@ conn = connect()
 
 st.title("Plant sensor - data analysis :seedling:")
 
+with st.sidebar:
+    show_time_history = st.slider("Show the last hours", 2, 24, 10)
+    selected_columns = st.multiselect("Which values should be displayed?",["Temperature","Moisture","Light","Conductivity"])
+    display_table = st.checkbox("show table")
+
 class Sensor_data:
     def __init__(self, sheet_url, df):
        self.sheet_url = sheet_url
        self.df = df
 
-    #@st.cache(suppress_st_warning=True)
     def run_query(self):
         query = f'SELECT * FROM "{self.sheet_url}"'
         rows = conn.execute(query, headers=1)
@@ -27,12 +32,15 @@ class Sensor_data:
 
     def show_table(self):
         self.df.drop("Battery", inplace=True, axis=1)
-        st.write(self.df)
+        st.write(self.df.tail(24))
 
     def show_line(self, x):
-        df_line = self.df
-        df_line["Time"] = pd.to_datetime(df_line["Time"]).dt.strftime("%H:%M")
-        st.line_chart(df_line, x = x,)
+        df_line = self.df.tail(show_time_history)
+        try:
+            df_line.drop("Battery", inplace=True, axis=1)
+        except KeyError:
+            pass 
+        st.line_chart(df_line, x = x, y = selected_columns, use_container_width=True,height=0)
 
     def show_metric(self):
         col1, col2, col3, col4 = st.columns(4)
@@ -51,7 +59,7 @@ sd = Sensor_data(sheet_url, df)
 sd.run_query()
 sd.show_battery()
 sd.show_metric()
-display_table = st.checkbox("show table")
+
 
 if display_table:
     sd.show_table()
