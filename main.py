@@ -4,18 +4,6 @@ import pandas as pd
 import altair as alt
 from datetime import datetime as dt
 
-# Create a connection object.
-st.set_page_config(layout="wide")
-
-conn = connect()
-
-st.title("Plant sensor - data analysis :seedling:")
-
-with st.sidebar:
-    show_time_history = st.slider("Show the last hours", 2, 24, 10)
-    selected_columns = st.multiselect("Which values should be displayed?",["Temperature","Moisture","Light","Conductivity"])
-    display_table = st.checkbox("show table")
-
 class Sensor_data:
     def __init__(self, sheet_url, df):
        self.sheet_url = sheet_url
@@ -34,6 +22,7 @@ class Sensor_data:
         self.df.drop("Battery", inplace=True, axis=1)
         st.write(self.df.tail(24))
 
+    #Displays a line chart, the variable show_time_history specifies how many time entries are displayed on the x-axis
     def show_line(self, x):
         df_line = self.df.tail(show_time_history)
         try:
@@ -42,6 +31,7 @@ class Sensor_data:
             pass 
         st.line_chart(df_line, x = x, y = selected_columns, use_container_width=True,height=0)
 
+    #Displays the current value and the delta to the last value
     def show_metric(self):
         col1, col2, col3, col4 = st.columns(4)
         col1.metric(label="Temperature", value=str(self.df.iloc[-1]["Temperature"])+"°C", delta=str(round((float(self.df.iloc[-1]["Temperature"]))-float(self.df.iloc[-2]["Temperature"]),2))+"°C")
@@ -52,14 +42,28 @@ class Sensor_data:
     def show_battery(self):
         st.title(":battery:" + str(int(self.df.iloc[-1]["Battery"]))+"%")
 
+#Layout and Title
+st.set_page_config(layout="wide")
+st.title("Plant sensor - data analysis :seedling:")
+
+#Define the Sidebar
+with st.sidebar:
+    show_time_history = st.slider("Show the last hours", 2, 24, 10)
+    selected_columns = st.multiselect("Which values should be displayed?",["Temperature","Moisture","Light","Conductivity"])
+    display_table = st.checkbox("show table")
+
+#Connection object for gspread
+conn = connect()
+
+#Parameter for class Sensor_data 
 df = pd.DataFrame(columns=["Time","Temperature","Moisture","Light","Conductivity","Battery"])
+#st.secrets gets value from streamlit cloud (url from the sheet)
 sheet_url = st.secrets["public_gsheets_url"]
 
 sd = Sensor_data(sheet_url, df)
 sd.run_query()
 sd.show_battery()
 sd.show_metric()
-
 
 if display_table:
     sd.show_table()
