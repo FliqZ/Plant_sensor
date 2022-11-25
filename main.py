@@ -25,7 +25,7 @@ class Sensor_data:
         
         scale_date_1 = dt.strptime(scale_date_1,"%c").time().hour
 
-        df_line = self.df.tail(scale_date_1+1)
+        df_line = self.df.tail((scale_date_1+1)*4)
 
         col1, col2, col3, col4 = st.columns(4)
 
