@@ -102,11 +102,10 @@ sd.run_query()
 sd.show_battery()
 sd.show_metric()
 
-match option:
-    case "Hour":
-        sd.show_line()
-    case "Day":
-        sd.show_line_all_data()
+if option == "Hour":
+    sd.show_line()
+else:
+    sd.show_line_all_data()
 
 
 
