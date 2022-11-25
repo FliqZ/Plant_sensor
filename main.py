@@ -84,10 +84,6 @@ class Sensor_data:
 st.set_page_config(layout="wide")
 st.title("Plant sensor - data analysis :seedling:")
 
-option = st.selectbox(
-    "Display data per:",
-    ("Hour","Day")
-)
 
 #Connection object for gspread
 conn = connect()
@@ -101,6 +97,11 @@ sd = Sensor_data(sheet_url, df)
 sd.run_query()
 sd.show_battery()
 sd.show_metric()
+
+option = st.selectbox(
+    "Display data per:",
+    ("Hour","Day")
+)
 
 if option == "Hour":
     sd.show_line()
