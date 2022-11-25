@@ -9,6 +9,11 @@ get to know the libraries Pandas and Streamlit and continuously collect data tha
 * [General info](#general-info)
 * [Technologies](#technologies)
 
+##General info
+The data is retrieved hourly from the Xiaomi MiFlora sensor by a Python script running on a Raspberry Pi 4. The script then stores the data in a Google Spreadsheet.
+
+Using Pandas, the data is processed and then displayed in a web app using Streamlit.
+
 ## Technologies
 Project is created with:
 * Python version : 3.9.15
