@@ -5,6 +5,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 import time
 
+#MAC-Adress from MiFlora
 poller = MiFloraPoller("5C:85:7E:B0:1E:C4",GatttoolBackend)
 gc = gspread.service_account()
 sheet = gc.open_by_key('1SIVicNq5FcrDpr73jNOlQ6vsvpBnSpLvm0LcGY-FGzQ')
