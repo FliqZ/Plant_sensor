@@ -85,7 +85,7 @@ st.set_page_config(layout="wide")
 st.title("Plant sensor - data analysis :seedling:")
 
 option = st.selectbox(
-    "Show Data per:",
+    "Display data per:",
     ("Hour","Day")
 )
 
