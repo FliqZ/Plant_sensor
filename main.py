@@ -18,20 +18,58 @@ class Sensor_data:
         for row in self.rows:
             self.df.loc[len(self.df)] = row
 
-    def show_table(self):
-        self.df.drop("Battery", inplace=True, axis=1)
-        st.write(self.df.tail(24))
-
     #Displays a line chart, the variable show_time_history specifies how many time entries are displayed on the x-axis
-    def show_line(self, x):
-        df_line = self.df.tail(show_time_history)
-        try:
-            df_line.drop("Battery", inplace=True, axis=1)
-        except KeyError:
-            pass 
-        st.line_chart(df_line, x = x, y = selected_columns, use_container_width=True,height=0)
+    def show_line(self):
+        
+        scale_date_1 = self.df.iloc[-1]["Time"]
+        
+        scale_date_1 = dt.strptime(scale_date_1,"%c").time().hour
 
-    #Displays the current value and the delta to the last value
+        df_line = self.df.tail(scale_date_1+1)
+
+        col1, col2, col3, col4 = st.columns(4)
+
+        chart1 = alt.Chart(df_line).mark_line(point={"filled": False,"fill": "white"}).encode(
+            y = alt.Y("Temperature:Q", scale = alt.Scale(domain=(df_line["Temperature"].min()-0.5,df_line["Temperature"].max()+0.5))),
+            x = alt.X("Time:T", axis=alt.Axis(format="%H:%M"), timeUnit='hoursminutes'))
+        chart2 = alt.Chart(df_line).mark_line(point={"filled": False,"fill": "white"}).encode(
+            y = alt.Y("Moisture", scale = alt.Scale(domain=(df_line["Moisture"].min()-1.0,df_line["Moisture"].max()+1.0))),
+            x = alt.X("Time:T", axis=alt.Axis(format="%H:%M"), timeUnit='hoursminutes'))
+        chart3 = alt.Chart(df_line).mark_line(point={"filled": False,"fill": "white"}).encode(
+            y = alt.Y("Light", scale = alt.Scale(domain=(df_line["Light"].min()-1.0,df_line["Light"].max()+1.0))),
+            x = alt.X("Time:T", axis=alt.Axis(format="%H:%M"), timeUnit='hoursminutes'))    
+        chart4 = alt.Chart(df_line).mark_line(point={"filled": False,"fill": "white"}).encode(
+            y = alt.Y("Conductivity", scale = alt.Scale(domain=(df_line["Conductivity"].min()-1.0,df_line["Conductivity"].max()+1.0))),
+            x = alt.X("Time:T", axis=alt.Axis(format="%H:%M"), timeUnit='hoursminutes')) 
+
+        col1.altair_chart(chart1,use_container_width=True,theme="streamlit")
+        col2.altair_chart(chart2,use_container_width=True,theme="streamlit")
+        col3.altair_chart(chart3,use_container_width=True,theme="streamlit")
+        col4.altair_chart(chart4,use_container_width=True,theme="streamlit")
+
+    def show_line_all_data(self):
+        df_line = self.df
+
+        col1, col2, col3, col4 = st.columns(4)
+
+        chart1 = alt.Chart(df_line).mark_line(point={"filled": False,"fill": "white"}).encode(
+            y = alt.Y("Temperature", scale = alt.Scale(domain=(df_line["Temperature"].min()-0.5,df_line["Temperature"].max()+0.5)), aggregate="mean"),
+            x = alt.X("Time", axis=alt.Axis(format="%d.%m"), timeUnit='monthdate'))
+        chart2 = alt.Chart(df_line).mark_line(point={"filled": False,"fill": "white"}).encode(
+            y = alt.Y("Moisture", scale = alt.Scale(domain=(df_line["Moisture"].min()-1.0,df_line["Moisture"].max()+1.0)), aggregate="mean"),
+            x = alt.X("Time", axis=alt.Axis(format="%d.%m"), timeUnit='monthdate'))
+        chart3 = alt.Chart(df_line).mark_line(point={"filled": False,"fill": "white"}).encode(
+            y = alt.Y("Light", scale = alt.Scale(domain=(df_line["Light"].min()-1.0,df_line["Light"].max()+1.0)), aggregate="mean"),
+            x = alt.X("Time", axis=alt.Axis(format="%d.%m"), timeUnit='monthdate'))    
+        chart4 = alt.Chart(df_line).mark_line(point={"filled": False,"fill": "white"}).encode(
+            y = alt.Y("Conductivity", scale = alt.Scale(domain=(df_line["Conductivity"].min()-1.0,df_line["Conductivity"].max()+1.0)), aggregate="mean"),
+            x = alt.X("Time", axis=alt.Axis(format="%d.%m"), timeUnit='monthdate')) 
+
+        col1.altair_chart(chart1,use_container_width=True,theme="streamlit")
+        col2.altair_chart(chart2,use_container_width=True,theme="streamlit")
+        col3.altair_chart(chart3,use_container_width=True,theme="streamlit")
+        col4.altair_chart(chart4,use_container_width=True,theme="streamlit")
+
     def show_metric(self):
         col1, col2, col3, col4 = st.columns(4)
         col1.metric(label="Temperature", value=str(self.df.iloc[-1]["Temperature"])+"°C", delta=str(round((float(self.df.iloc[-1]["Temperature"]))-float(self.df.iloc[-2]["Temperature"]),2))+"°C")
@@ -46,11 +84,10 @@ class Sensor_data:
 st.set_page_config(layout="wide")
 st.title("Plant sensor - data analysis :seedling:")
 
-#Define the Sidebar
-with st.sidebar:
-    show_time_history = st.slider("Show the last hours", 2, 24, 10)
-    selected_columns = st.multiselect("Which values should be displayed?",["Temperature","Moisture","Light","Conductivity"])
-    display_table = st.checkbox("show table")
+option = st.selectbox(
+    "Show Data per:",
+    ("Hour","Day")
+)
 
 #Connection object for gspread
 conn = connect()
@@ -65,10 +102,11 @@ sd.run_query()
 sd.show_battery()
 sd.show_metric()
 
-if display_table:
-    sd.show_table()
-    sd.show_line(x="Time")
-else:
-    sd.show_line(x="Time")
+match option:
+    case "Hour":
+        sd.show_line()
+    case "Day":
+        sd.show_line_all_data()
+
 
 
