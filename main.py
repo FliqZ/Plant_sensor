@@ -29,16 +29,16 @@ class Sensor_data:
 
         col1, col2, col3, col4 = st.columns(4)
 
-        chart1 = alt.Chart(df_line).mark_line(point={"filled": False,"fill": "white"}).encode(
+        chart1 = alt.Chart(df_line, title="Temperature per hour").mark_line(point={"filled": False,"fill": "white"}).encode(
             y = alt.Y("Temperature:Q", scale = alt.Scale(domain=(df_line["Temperature"].min()-0.5,df_line["Temperature"].max()+0.5))),
             x = alt.X("Time:T", axis=alt.Axis(format="%H:%M"), timeUnit='hoursminutes'))
-        chart2 = alt.Chart(df_line).mark_line(point={"filled": False,"fill": "white"}).encode(
+        chart2 = alt.Chart(df_line, title="Moisture per hour").mark_line(point={"filled": False,"fill": "white"}).encode(
             y = alt.Y("Moisture", scale = alt.Scale(domain=(df_line["Moisture"].min()-1.0,df_line["Moisture"].max()+1.0))),
             x = alt.X("Time:T", axis=alt.Axis(format="%H:%M"), timeUnit='hoursminutes'))
-        chart3 = alt.Chart(df_line).mark_line(point={"filled": False,"fill": "white"}).encode(
+        chart3 = alt.Chart(df_line, title="Light per hour").mark_line(point={"filled": False,"fill": "white"}).encode(
             y = alt.Y("Light", scale = alt.Scale(domain=(df_line["Light"].min()-1.0,df_line["Light"].max()+1.0))),
             x = alt.X("Time:T", axis=alt.Axis(format="%H:%M"), timeUnit='hoursminutes'))    
-        chart4 = alt.Chart(df_line).mark_line(point={"filled": False,"fill": "white"}).encode(
+        chart4 = alt.Chart(df_line, title="Conductivity per hour").mark_line(point={"filled": False,"fill": "white"}).encode(
             y = alt.Y("Conductivity", scale = alt.Scale(domain=(df_line["Conductivity"].min()-1.0,df_line["Conductivity"].max()+1.0))),
             x = alt.X("Time:T", axis=alt.Axis(format="%H:%M"), timeUnit='hoursminutes')) 
 
@@ -52,16 +52,16 @@ class Sensor_data:
 
         col1, col2, col3, col4 = st.columns(4)
 
-        chart1 = alt.Chart(df_line).mark_line(point={"filled": False,"fill": "white"}).encode(
+        chart1 = alt.Chart(df_line, title="Temperature per day").mark_line(point={"filled": False,"fill": "white"}).encode(
             y = alt.Y("Temperature", scale = alt.Scale(domain=(df_line["Temperature"].min()-0.5,df_line["Temperature"].max()+0.5)), aggregate="mean"),
             x = alt.X("Time", axis=alt.Axis(format="%d.%m"), timeUnit='monthdate'))
-        chart2 = alt.Chart(df_line).mark_line(point={"filled": False,"fill": "white"}).encode(
+        chart2 = alt.Chart(df_line, title="Moisture per day").mark_line(point={"filled": False,"fill": "white"}).encode(
             y = alt.Y("Moisture", scale = alt.Scale(domain=(df_line["Moisture"].min()-1.0,df_line["Moisture"].max()+1.0)), aggregate="mean"),
             x = alt.X("Time", axis=alt.Axis(format="%d.%m"), timeUnit='monthdate'))
-        chart3 = alt.Chart(df_line).mark_line(point={"filled": False,"fill": "white"}).encode(
+        chart3 = alt.Chart(df_line, title="Light per day").mark_line(point={"filled": False,"fill": "white"}).encode(
             y = alt.Y("Light", scale = alt.Scale(domain=(df_line["Light"].min()-1.0,df_line["Light"].max()+1.0)), aggregate="mean"),
             x = alt.X("Time", axis=alt.Axis(format="%d.%m"), timeUnit='monthdate'))    
-        chart4 = alt.Chart(df_line).mark_line(point={"filled": False,"fill": "white"}).encode(
+        chart4 = alt.Chart(df_line, title="Conductivity per day").mark_line(point={"filled": False,"fill": "white"}).encode(
             y = alt.Y("Conductivity", scale = alt.Scale(domain=(df_line["Conductivity"].min()-1.0,df_line["Conductivity"].max()+1.0)), aggregate="mean"),
             x = alt.X("Time", axis=alt.Axis(format="%d.%m"), timeUnit='monthdate')) 
 
