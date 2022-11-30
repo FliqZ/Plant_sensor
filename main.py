@@ -21,11 +21,11 @@ class Sensor_data:
     #Displays a line chart, the variable show_time_history specifies how many time entries are displayed on the x-axis
     def show_line(self):
         
+        #Gets the last hour to later output the current day up to the current hour
         scale_date_1 = self.df.iloc[-1]["Time"]
-        
         scale_date_1 = dt.strptime(scale_date_1,"%c").time().hour
-
-        df_line = self.df.tail((scale_date_1+1)*4)
+        # +1, because otherwise the data is displayed only from 1 o'clock and not already from 0 o'clock
+        df_line = self.df.tail((scale_date_1+1))
 
         col1, col2, col3, col4 = st.columns(4)
 
