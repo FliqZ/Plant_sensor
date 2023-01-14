@@ -75,16 +75,16 @@ class Sensor_data:
 
         col1, col2, col3, col4 = st.columns(4)
 
-        chart1 = alt.Chart(df_line, title="Temperature per day").mark_line(point={"filled": False,"fill": "white"}).encode(
+        chart1 = alt.Chart(df_line, title="Temperature per month").mark_line(point={"filled": False,"fill": "white"}).encode(
             y = alt.Y("Temperature", scale = alt.Scale(domain=(df_line["Temperature"].min()-0.5,df_line["Temperature"].max()+0.5)), aggregate="mean"),
             x = alt.X("Time", axis=alt.Axis(format="%m.%y"), timeUnit='yearmonth'))
-        chart2 = alt.Chart(df_line, title="Moisture per day").mark_line(point={"filled": False,"fill": "white"}).encode(
+        chart2 = alt.Chart(df_line, title="Moisture per month").mark_line(point={"filled": False,"fill": "white"}).encode(
             y = alt.Y("Moisture", scale = alt.Scale(domain=(df_line["Moisture"].min()-1.0,df_line["Moisture"].max()+1.0)), aggregate="mean"),
             x = alt.X("Time", axis=alt.Axis(format="%m.%y"), timeUnit='yearmonth'))
-        chart3 = alt.Chart(df_line, title="Light per day").mark_line(point={"filled": False,"fill": "white"}).encode(
+        chart3 = alt.Chart(df_line, title="Light per month").mark_line(point={"filled": False,"fill": "white"}).encode(
             y = alt.Y("Light", scale = alt.Scale(domain=(df_line["Light"].min()-1.0,df_line["Light"].max()+1.0)), aggregate="mean"),
             x = alt.X("Time", axis=alt.Axis(format="%m.%y"), timeUnit='yearmonth'))    
-        chart4 = alt.Chart(df_line, title="Conductivity per day").mark_line(point={"filled": False,"fill": "white"}).encode(
+        chart4 = alt.Chart(df_line, title="Conductivity per month").mark_line(point={"filled": False,"fill": "white"}).encode(
             y = alt.Y("Conductivity", scale = alt.Scale(domain=(df_line["Conductivity"].min()-1.0,df_line["Conductivity"].max()+1.0)), aggregate="mean"),
             x = alt.X("Time", axis=alt.Axis(format="%m.%y"), timeUnit='yearmonth')) 
 
